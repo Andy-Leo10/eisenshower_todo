@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 void main() {
@@ -35,23 +35,18 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Future<void> _loadTasks() async {
-    final file = await _getLocalFile();
-    if (await file.exists()) {
-      final contents = await file.readAsString();
+    final prefs = await SharedPreferences.getInstance();
+    final tasksString = prefs.getString('tasks');
+    if (tasksString != null) {
       setState(() {
-        _tasks = List<String>.from(json.decode(contents));
+        _tasks = List<String>.from(json.decode(tasksString));
       });
     }
   }
 
-  Future<File> _getLocalFile() async {
-    final directory = await Directory.systemTemp.createTemp();
-    return File('${directory.path}/tasks.json');
-  }
-
   Future<void> _saveTasks() async {
-    final file = await _getLocalFile();
-    await file.writeAsString(json.encode(_tasks));
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tasks', json.encode(_tasks));
   }
 
   void _addTask(String task) {
