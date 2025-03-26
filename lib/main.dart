@@ -23,16 +23,25 @@ class EisenhowerMatrix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Eisenhower Matrix'),
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        children: const [
-          TodoListScreen(title: 'Important & Urgent'),
-          TodoListScreen(title: 'Important & Not Urgent'),
-          TodoListScreen(title: 'Not Important & Urgent'),
-          TodoListScreen(title: 'Not Important & Not Urgent'),
+      body: Column(
+        children: [
+          const SizedBox(height: 16), // Add padding or block above all quadrants
+          Expanded(
+            child: Row(
+              children: const [
+                Expanded(child: TodoListScreen(title: 'Schedule')),
+                Expanded(child: TodoListScreen(title: 'Do First')),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: const [
+                Expanded(child: TodoListScreen(title: 'Delegate')),
+                Expanded(child: TodoListScreen(title: 'Don\'t Do')),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -91,44 +100,45 @@ class _TodoListScreenState extends State<TodoListScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                    labelText: 'New Task',
-                  ),
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  labelText: '${widget.title}',
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  if (_controller.text.isNotEmpty) {
-                    _addTask(_controller.text);
-                    _controller.clear();
-                  }
-                },
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                if (_controller.text.isNotEmpty) {
+                  _addTask(_controller.text);
+                  _controller.clear();
+                }
+              },
+            ),
+          ],
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: _tasks.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(_tasks[index]),
-                trailing: IconButton(
-                  icon: const Icon(Icons.check_box),
-                  onPressed: () {
-                    _removeTask(index);
-                  },
-                ),
-              );
-            },
+          child: SingleChildScrollView(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _tasks.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_tasks[index]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.check_box),
+                    onPressed: () {
+                      _removeTask(index);
+                    },
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ],
