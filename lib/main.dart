@@ -12,13 +12,37 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: TodoListScreen(),
+      home: EisenhowerMatrix(),
+    );
+  }
+}
+
+class EisenhowerMatrix extends StatelessWidget {
+  const EisenhowerMatrix({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Eisenhower Matrix'),
+      ),
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: const [
+          TodoListScreen(title: 'Important & Urgent'),
+          TodoListScreen(title: 'Important & Not Urgent'),
+          TodoListScreen(title: 'Not Important & Urgent'),
+          TodoListScreen(title: 'Not Important & Not Urgent'),
+        ],
+      ),
     );
   }
 }
 
 class TodoListScreen extends StatefulWidget {
-  const TodoListScreen({super.key});
+  final String title;
+
+  const TodoListScreen({required this.title, super.key});
 
   @override
   _TodoListScreenState createState() => _TodoListScreenState();
@@ -36,7 +60,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Future<void> _loadTasks() async {
     final prefs = await SharedPreferences.getInstance();
-    final tasksString = prefs.getString('tasks');
+    final tasksString = prefs.getString(widget.title);
     if (tasksString != null) {
       setState(() {
         _tasks = List<String>.from(json.decode(tasksString));
@@ -46,7 +70,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   Future<void> _saveTasks() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('tasks', json.encode(_tasks));
+    await prefs.setString(widget.title, json.encode(_tasks));
   }
 
   void _addTask(String task) {
@@ -65,54 +89,49 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('To-Do List'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      labelText: 'New Task',
-                    ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    labelText: 'New Task',
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add),
+              ),
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  if (_controller.text.isNotEmpty) {
+                    _addTask(_controller.text);
+                    _controller.clear();
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _tasks.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(_tasks[index]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.check_box),
                   onPressed: () {
-                    if (_controller.text.isNotEmpty) {
-                      _addTask(_controller.text);
-                      _controller.clear();
-                    }
+                    _removeTask(index);
                   },
                 ),
-              ],
-            ),
+              );
+            },
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _tasks.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_tasks[index]),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.check_box),
-                    onPressed: () {
-                      _removeTask(index);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
