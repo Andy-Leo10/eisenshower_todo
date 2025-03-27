@@ -28,17 +28,37 @@ class EisenhowerMatrix extends StatelessWidget {
           const SizedBox(height: 16), // Add padding or block above all quadrants
           Expanded(
             child: Row(
-              children: const [
-                Expanded(child: TodoListScreen(title: 'Schedule')),
-                Expanded(child: TodoListScreen(title: 'Do First')),
+              children: [
+                Expanded(
+                  child: Container(
+                    color: Colors.blue[300], // Color for Schedule quadrant
+                    child: const TodoListScreen(title: 'Schedule'),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.green[400], // Color for Do First quadrant
+                    child: const TodoListScreen(title: 'Do First'),
+                  ),
+                ),
               ],
             ),
           ),
           Expanded(
             child: Row(
-              children: const [
-                Expanded(child: TodoListScreen(title: 'Delegate')),
-                Expanded(child: TodoListScreen(title: 'Don\'t Do')),
+              children: [
+                Expanded(
+                  child: Container(
+                    color: Colors.red[100], // Color for Delegate quadrant
+                    child: const TodoListScreen(title: "Don't Do"),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.yellow[200], // Color for Don't Do quadrant
+                    child: const TodoListScreen(title: 'Delegate'),
+                  ),
+                ),
               ],
             ),
           ),
