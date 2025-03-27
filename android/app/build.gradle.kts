@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "com.example.eisenshower_todo"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973" // for solving an error
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
