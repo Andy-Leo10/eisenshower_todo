@@ -2,6 +2,8 @@
 
 The project aims to boost your productivity.
 
+![app](results/result.png)
+
 ## For building the app
 ```
 flutter build apk --release
