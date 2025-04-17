@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter binding is initialized
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -80,6 +85,7 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<TodoListScreen> {
   List<String> _tasks = [];
   final TextEditingController _controller = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
@@ -88,18 +94,26 @@ class _TodoListScreenState extends State<TodoListScreen> {
   }
 
   Future<void> _loadTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    final tasksString = prefs.getString(widget.title);
-    if (tasksString != null) {
-      setState(() {
-        _tasks = List<String>.from(json.decode(tasksString));
-      });
+    try {
+      final snapshot = await _firestore.collection('tasks').doc(widget.title).get();
+      if (snapshot.exists) {
+        setState(() {
+          _tasks = List<String>.from(snapshot.data()?['tasks'] ?? []);
+        });
+      }
+    } catch (e) {
+      print('Error loading tasks: $e');
     }
   }
 
   Future<void> _saveTasks() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(widget.title, json.encode(_tasks));
+    try {
+      await _firestore.collection('tasks').doc(widget.title).set({
+        'tasks': _tasks,
+      });
+    } catch (e) {
+      print('Error saving tasks: $e');
+    }
   }
 
   void _addTask(String task) {
