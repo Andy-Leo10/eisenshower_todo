@@ -19,9 +19,15 @@ keytool -genkey -v -keystore <PATH_TO_SAVE>\my-release-key.jks -keyalg RSA -keys
 ## Libs used from pub.dev
 
 1. [Shared Preferences](https://pub.dev/packages/shared_preferences)
+In case you don't want to use Firebase, the suggestion is to use:
 ```
 flutter pub add shared_preferences
 ```
 2. [Generate iPA file]([LINK](https://www.youtube.com/watch?v=mQMy12Sk0xM&list=LL&index=13))
 3. [Scarlet](https://www.youtube.com/watch?v=aKPYaSI8d3Q)
-<!-- 4. [TEXT](LINK) -->
+4. [Firebase](https://firebase.google.com/)
+```
+flutter pub add firebase_core
+flutter pub add cloud_firestore
+```
+<!-- 5. [TEXT](LINK) -->
