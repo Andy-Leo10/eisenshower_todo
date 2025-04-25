@@ -23,9 +23,9 @@ In case you don't want to use Firebase, the suggestion is to use:
 ```
 flutter pub add shared_preferences
 ```
-2. [Generate iPA file]([LINK](https://www.youtube.com/watch?v=mQMy12Sk0xM&list=LL&index=13))
-3. [Scarlet](https://www.youtube.com/watch?v=aKPYaSI8d3Q)
-4. [Firebase](https://firebase.google.com/)
+1. [Generate iPA file]((https://www.youtube.com/watch?v=mQMy12Sk0xM&list=LL&index=13))
+2. [Scarlet](https://www.youtube.com/watch?v=aKPYaSI8d3Q)
+3. [Firebase](https://firebase.google.com/)
 ```
 flutter pub add firebase_core
 flutter pub add cloud_firestore
